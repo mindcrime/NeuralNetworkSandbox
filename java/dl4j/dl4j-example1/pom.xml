@@ -80,6 +80,15 @@
 	</dependencyManagement>
 
 	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/org.datavec/datavec-spark_2.11 -->
+		<dependency>
+			<groupId>org.datavec</groupId>
+			<artifactId>datavec-spark_2.11</artifactId>
+			<version>${dl4j.version}</version>
+		</dependency>
+
+
 		<!-- ND4J backend. You need one in every DL4J project. Normally define 
 			artifactId as either "nd4j-native-platform" or "nd4j-c\ uda-7.5-platform" -->
 		<dependency>
