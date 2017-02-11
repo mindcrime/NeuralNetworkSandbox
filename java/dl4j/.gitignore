@@ -2,3 +2,4 @@ MLPLinearClassifier/
 RemoteSystemsTempFiles/
 .recommenders/
 .metadata/
+*.zip
