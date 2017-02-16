@@ -69,11 +69,6 @@ public class MnistImagePipelineExample
 		}
 		
 		
-		
-		
-		
-		
-		
 		System.out.println( "done" );
 		log.info( "done" );
 	}
