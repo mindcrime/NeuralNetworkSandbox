@@ -2,6 +2,7 @@ package org.fogbeam.dl4j.mnist;
 
 import java.io.File;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.BasicConfigurator;
 import org.datavec.api.io.labels.ParentPathLabelGenerator;
@@ -20,6 +21,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -29,6 +31,8 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Stopwatch;
+
 public class MnistImagePipelineWith3LayerNNExample 
 {
 
@@ -37,7 +41,17 @@ public class MnistImagePipelineWith3LayerNNExample
 	public static void main(String[] args) throws Exception
 	{
 		BasicConfigurator.configure();
+
+		boolean saveModel = false;
+		if( args.length > 0 )
+		{
+			saveModel = Boolean.parseBoolean(args[0]);
+		}
+
+		log.info( "saveModel: " + saveModel );
 		
+	
+		Stopwatch stopwatch = Stopwatch.createStarted();
 		
 		// image information
 		// 28x28 grayscale (single channel)
@@ -124,6 +138,8 @@ public class MnistImagePipelineWith3LayerNNExample
 			model.fit(dataIterator);
 		}
 		
+		stopwatch.stop();
+		
 		
 		imageReader.reset();
 		
@@ -144,10 +160,21 @@ public class MnistImagePipelineWith3LayerNNExample
 			eval.eval(ds.getLabels(), output);
 		}
 		
+		
 		log.info( eval.stats() );
+		log.info( "Training time: " + stopwatch.elapsed(TimeUnit.SECONDS ) + " seconds, or " +  stopwatch.elapsed(TimeUnit.MINUTES ) + " minutes.");
 		
-		
-		
+		if( saveModel )
+		{
+			log.info( "**************** SAVING MODEL ****************");
+			File modelOutputLocation = new File( "mnist_model_nn.zip" );
+			if( modelOutputLocation.exists() )
+			{
+				modelOutputLocation.delete();
+				modelOutputLocation = new File( "mnist_model_nn.zip" );
+			}
+			ModelSerializer.writeModel(model, modelOutputLocation, false);
+		}
 		
 		
 		

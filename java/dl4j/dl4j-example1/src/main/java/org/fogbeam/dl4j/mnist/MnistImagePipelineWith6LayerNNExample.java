@@ -1,8 +1,8 @@
 package org.fogbeam.dl4j.mnist;
 
 import java.io.File;
-import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.BasicConfigurator;
 import org.datavec.api.io.labels.ParentPathLabelGenerator;
@@ -21,6 +21,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -30,15 +31,27 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MnistImagePipelineWithNNExample 
+import com.google.common.base.Stopwatch;
+
+public class MnistImagePipelineWith6LayerNNExample 
 {
 
-	private static Logger log = LoggerFactory.getLogger(MnistImagePipelineWithNNExample.class);
+	private static Logger log = LoggerFactory.getLogger(MnistImagePipelineWith6LayerNNExample.class);
 	
 	public static void main(String[] args) throws Exception
 	{
 		BasicConfigurator.configure();
+
+		boolean saveModel = false;
+		if( args.length > 0 )
+		{
+			saveModel = Boolean.parseBoolean(args[0]);
+		}
+
+		log.info( "saveModel: " + saveModel );
 		
+	
+		Stopwatch stopwatch = Stopwatch.createStarted();
 		
 		// image information
 		// 28x28 grayscale (single channel)
@@ -51,8 +64,8 @@ public class MnistImagePipelineWithNNExample
 		int outputNum = 10;
 		
 		
-		int numEpochs = 15;
-		double learningRate = 0.006;
+		int numEpochs = 45;
+		double learningRate = 0.0006;
 		
 		
 		
@@ -70,11 +83,6 @@ public class MnistImagePipelineWithNNExample
 		
 		imageReader.initialize(trainingSplit);
 		// imageReader.setListeners( new LogRecordListener() );
-		
-			
-		List<String> labels = imageReader.getLabels();
-		System.out.println( "labels: " + labels );
-		
 		
 		DataSetIterator dataIterator = new RecordReaderDataSetIterator(imageReader, batchSize, 1, outputNum);
 
@@ -98,7 +106,31 @@ public class MnistImagePipelineWithNNExample
 						.activation("relu")
 						.weightInit( WeightInit.XAVIER)
 						.build())
-				.layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+				.layer(1, new DenseLayer.Builder()
+						.nIn(100)
+						.nOut(100)
+						.activation("relu")
+						.weightInit( WeightInit.XAVIER)
+						.build())
+				.layer(2, new DenseLayer.Builder()
+						.nIn(100)
+						.nOut(100)
+						.activation("relu")
+						.weightInit( WeightInit.XAVIER)
+						.build())
+				.layer(3, new DenseLayer.Builder()
+						.nIn(100)
+						.nOut(100)
+						.activation("relu")
+						.weightInit( WeightInit.XAVIER)
+						.build())
+				.layer(4, new DenseLayer.Builder()
+						.nIn(100)
+						.nOut(100)
+						.activation("relu")
+						.weightInit( WeightInit.XAVIER)
+						.build())
+				.layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
 						.nIn(100)
 						.nOut(outputNum)
 						.activation("softmax")
@@ -124,6 +156,8 @@ public class MnistImagePipelineWithNNExample
 			model.fit(dataIterator);
 		}
 		
+		stopwatch.stop();
+		
 		
 		imageReader.reset();
 		
@@ -144,10 +178,21 @@ public class MnistImagePipelineWithNNExample
 			eval.eval(ds.getLabels(), output);
 		}
 		
+		
 		log.info( eval.stats() );
+		log.info( "Training time: " + stopwatch.elapsed(TimeUnit.SECONDS ) + " seconds, or " +  stopwatch.elapsed(TimeUnit.MINUTES ) + " minutes.");
 		
-		
-		
+		if( saveModel )
+		{
+			log.info( "**************** SAVING MODEL ****************");
+			File modelOutputLocation = new File( "mnist_model_nn.zip" );
+			if( modelOutputLocation.exists() )
+			{
+				modelOutputLocation.delete();
+				modelOutputLocation = new File( "mnist_model_nn.zip" );
+			}
+			ModelSerializer.writeModel(model, modelOutputLocation, false);
+		}
 		
 		
 		
