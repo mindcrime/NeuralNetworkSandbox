@@ -1,0 +1,5 @@
+Job run at: Wed Mar 08 21:15:19 EST 2017
+Training model took 408 seconds.
+Total elapsed time: 440
+Working dir: /home/prhodes/development/experimental/ai_exp/NeuralNetworkSandbox/java/dl4j/spark-launcher
+

@@ -1,0 +1,1 @@
+spark-submit --master yarn-client --class org.fogbeam.dl4j.spark.ExpMain3 --num-executors 7 --deploy-mode client --executor-memory 24g --driver-memory 24g  --executor-cores 8 dl4j-spark-0.0.1-SNAPSHOT.jar

@@ -13,8 +13,14 @@ inputX4 = [1; 1 ; 1];
 nnWeightsTheta = [ -30; 20; 20];
 
 temp1 = (inputX1')*nnWeightsTheta;
+
+
 temp2 = (inputX2')*nnWeightsTheta;
+
+
 temp3 = (inputX3')*nnWeightsTheta;
+
+
 temp4 = (inputX4')*nnWeightsTheta;
 
 sigmoid(temp1)

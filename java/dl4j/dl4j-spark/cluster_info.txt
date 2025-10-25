@@ -1,0 +1,13 @@
+Your NeuralObjects analytic environment has been prepared and is ready for use.  
+Environment name: DL4J Cluster 2
+Master Node hostname: master.dl4j-cluster-2.fogbeam-labs.neuralobjects.com
+Admin Node hostname: admin.dl4j-cluster-2.fogbeam-labs.neuralobjects.com
+Ambari username: admin
+Ambari password: 4MQO1veU4F
+WebHDFS username: webhdfs
+WebHDFS password: wpassword
+Zeppelin username: zeppelin
+Zeppelin password: H1LCXoMgyx
+
+
+Environment build time: 2533 seconds

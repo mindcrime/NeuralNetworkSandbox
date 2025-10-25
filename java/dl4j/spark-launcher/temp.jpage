@@ -1,0 +1,14 @@
+
+
+byte[] data = new byte[4096];
+data[23] = (byte)65;
+String foo = new String( data ).trim();
+System.out.println( "foo = \"" + foo + "\"" );
+
+Arrays.fill( data, (byte)0);
+data[23] = (byte)67;
+String bar = new String( data ).trim();
+System.out.println( "bar = \"" + bar + "\"" );
+
+
+System.out.println( "done");

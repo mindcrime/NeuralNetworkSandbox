@@ -1,0 +1,157 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.fogbeam.dl4j</groupId>
+	<artifactId>dl4j-spark</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>dl4j-spark</name>
+	<description>dl4j-spark</description>
+
+	<properties>
+		<!-- Change the nd4j.backend property to nd4j-cuda-7.5-platform or nd4j-cuda-8.0-platform 
+			to use CUDA GPUs -->
+
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<nd4j.backend>nd4j-native-platform</nd4j.backend>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<shadedClassifier>bin</shadedClassifier>
+		<java.version>1.8</java.version>
+		<nd4j.version>0.7.2</nd4j.version>
+		<dl4j.version>0.7.2</dl4j.version>
+		<datavec.version>0.7.2</datavec.version>
+		<arbiter.version>0.7.2</arbiter.version>
+		<rl4j.version>0.7.2</rl4j.version>
+		<guava.version>19.0</guava.version>
+		<logback.version>1.1.7</logback.version>
+		<jfreechart.version>1.0.13</jfreechart.version>
+		<jcommon.version>1.0.23</jcommon.version>
+		<maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
+		<exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
+		<maven.minimum.version>3.3.1</maven.minimum.version>
+		<spark.binary.version>2.11</spark.binary.version>
+	</properties>
+
+
+	<dependencies>
+
+
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1212</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.datavec/datavec-spark_2.11 -->
+		<dependency>
+			<groupId>org.datavec</groupId>
+			<artifactId>datavec-spark_2.10</artifactId>
+			<version>${dl4j.version}</version>
+		</dependency>
+
+
+		<!-- ND4J backend. You need one in every DL4J project. Normally define 
+			artifactId as either "nd4j-native-platform" or "nd4j-c\ uda-7.5-platform" -->
+		<dependency>
+			<groupId>org.nd4j</groupId>
+			<artifactId>${nd4j.backend}</artifactId>
+			<version>${dl4j.version}</version>
+		</dependency>
+
+		<!-- Core DL4J functionality -->
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>deeplearning4j-core</artifactId>
+			<version>${dl4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>dl4j-spark_2.10</artifactId>
+			<version>${dl4j.version}</version>
+		</dependency>
+
+
+		<!-- Force guava versions for using UI/HistogramIterationListener -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+
+		<!-- datavec-data-codec: used only in video example for loading video data -->
+		<dependency>
+			<artifactId>datavec-data-codec</artifactId>
+			<groupId>org.datavec</groupId>
+			<version>${datavec.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.48</version>
+		</dependency>
+
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>false</minimizeJar>
+							<createDependencyReducedPom>true</createDependencyReducedPom>
+							<dependencyReducedPomLocation>
+								${java.io.tmpdir}/dependency-reduced-pom.xml
+							</dependencyReducedPomLocation>
+							<relocations>
+								<!-- <relocation> <pattern>org.apache.spark</pattern> <shadedPattern>hidden.spark</shadedPattern> 
+									</relocation> -->
+
+								<relocation>
+									<pattern>com.google.common</pattern>
+									<shadedPattern>local.com.google.common</shadedPattern>
+								</relocation>
+							</relocations>
+							<artifactSet>
+								<excludes>
+									<exclude>org.apache.spark:*</exclude>
+									<exclude>org.apache.hadoop:*</exclude>
+								</excludes>
+							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<!-- <exclude>META-INF/*.SF</exclude> -->
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>org/apache/spark/**</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

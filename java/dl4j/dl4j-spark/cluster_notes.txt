@@ -1,0 +1,14 @@
+# open files
+uname -n 64000
+
+# yarn memory
+yarn.nodemanager.resource.memory-mb
+yarn.scheduler.maximum-allocation-mb
+
+# yarn CPU
+yarn.scheduler.maximum-allocation-vcores
+yarn.nodemanager.resource.cpu-vcores
+yarn.nodemanager.resource.percentage-physical-cpu-limit
+
+# HDFS - set this fairly low since we want most of our EBS space to be used by HDFS
+dfs.datanode.du.reserved
