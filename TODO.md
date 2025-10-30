@@ -28,7 +28,8 @@
 23. Graph Neural Networks (GNN)
 24. Neural Turing Machine (NTM) / Differentiable Neural Computer (DNC)
 25. ???
-26. Newer architectures up to and including Transformers
+26. Diffusion models
+27. Newer architectures up to and including Transformers
 
 ## Notes:
 
